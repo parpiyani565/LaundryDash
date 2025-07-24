@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickWash - 20-Minute Laundry Service</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .role-switcher {
+            display: flex;
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 8px 12px;
+            background: transparent;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .role-btn.active {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .content {
+            padding: 20px;
+            min-height: calc(100vh - 120px);
+        }
+
+        /* User Interface */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .service-card.selected {
+            border-color: #4facfe;
+            transform: translateY(-5px);
+        }
+
+        .service-card .icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .service-card h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .service-card p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .quantity-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quantity-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .quantity-input {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .quantity-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .weight-slider {
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .weight-display {
+            text-align: center;
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 10px;
+        }
+
+        .pricing {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .pricing h4 {
+            margin-bottom: 10px;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .total {
+            border-top: 2px solid white;
+            padding-top: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .order-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .order-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .order-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Order Tracking */
+        .tracking-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .order-id {
+            font-weight: bold;
+            color: #4facfe;
+            margin-bottom: 10px;
+        }
+
+        .status-timeline {
+            margin: 20px 0;
+        }
+
+        .status-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .status-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 14px;
+            color: white;
+        }
+
+        .status-step.completed .status-icon {
+            background: #28a745;
+        }
+
+        .status-step.active .status-icon {
+            background: #4facfe;
+            animation: pulse 2s infinite;
+        }
+
+        .status-step.pending .status-icon {
+            background: #e9ecef;
+            color: #666;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .countdown {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4facfe;
+            margin: 20px 0;
+        }
+
+        /* Driver Interface */
+        .request-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #4facfe;
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .customer-info {
+            margin-bottom: 15px;
+        }
+
+        .action-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #218838;
+        }
+
+        .action-btn.warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .action-btn.danger {
+            background: #dc3545;
+        }
+
+        /* Admin Interface */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .machine-status {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .machine {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .machine-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .machine-indicator.available {
+            background: #28a745;
+        }
+
+        .machine-indicator.busy {
+            background: #ffc107;
+        }
+
+        .machine-indicator.maintenance {
+            background: #dc3545;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .order-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: #f8f9fa;
+        }
+
+        .reorder-btn {
+            background: #4facfe;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .map-simulation {
+            background: #e9ecef;
+            height: 200px;
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .driver-dot {
+            width: 20px;
+            height: 20px;
+            background: #4facfe;
+            border-radius: 50%;
+            position: absolute;
+            animation: moveDriver 10s linear infinite;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
+        }
+
+        @keyframes moveDriver {
+            0% { left: 10px; top: 50%; }
+            25% { left: 50%; top: 20px; }
+            50% { left: calc(100% - 30px); top: 50%; }
+            75% { left: 50%; top: calc(100% - 30px); }
+            100% { left: 10px; top: 50%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>QuickWash</h1>
+            <p>20-Minute Laundry Service</p>
+            <div class="role-switcher">
+                <button class="role-btn active" onclick="switchRole('user')">Customer</button>
+                <button class="role-btn" onclick="switchRole('driver')">Driver</button>
+                <button class="role-btn" onclick="switchRole('admin')">Admin</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- User Interface -->
+            <div id="user-interface">
+                <div id="order-form">
+                    <h2 style="margin-bottom: 20px;">Select Your Service</h2>
+                    <div class="service-grid">
+                        <div class="service-card" onclick="selectService('wash-fold')">
+                            <div class="icon">🧺</div>
+                            <h3>Wash & Fold</h3>
+                            <p>$2.50/lb</p>
+                        </div>
+                        <div class="service-card" onclick="selectService('dry-clean')">
+                            <div class="icon">👔</div>
+                            <h3>Dry Clean</h3>
+                            <p>$8.00/item</p>
+                        </div>
+                        <div class="service-card" onclick="selectService('ironing')">
+                            <div class="icon">🔥</div>
+                            <h3>Ironing</h3>
+                            <p>$3.00/item</p>
+                        </div>
+                        <div class="service-card" onclick="selectService('express')">
+                            <div class="icon">⚡</div>
+                            <h3>Express Combo</h3>
+                            <p>All services</p>
+                        </div>
+                    </div>
+
+                    <div class="quantity-section">
+                        <h3>Quantity</h3>
+                        <div class="quantity-input">
+                            <input type="number" id="shirts" placeholder="Shirts" min="0" onchange="updatePricing()">
+                            <input type="number" id="pants" placeholder="Pants" min="0" onchange="updatePricing()">
+                        </div>
+                        <div class="weight-display">Estimated Weight: <span id="weight-value">5</span> lbs</div>
+                        <input type="range" class="weight-slider" id="weight-slider" min="1" max="20" value="5" oninput="updateWeight()">
+                    </div>
+
+                    <div class="pricing">
+                        <h4>Pricing Breakdown</h4>
+                        <div class="price-item">
+                            <span>Service:</span>
+                            <span id="service-cost">$12.50</span>
+                        </div>
+                        <div class="price-item">
+                            <span>Express Fee:</span>
+                            <span id="express-fee">$5.00</span>
+                        </div>
+                        <div class="price-item total">
+                            <span>Total:</span>
+                            <span id="total-cost">$17.50</span>
+                        </div>
+                    </div>
+
+                    <button class="order-btn" onclick="placeOrder()">
+                        Place Order - 20 Min Guarantee! ⏱️
+                    </button>
+                </div>
+
+                <div id="order-tracking" class="hidden">
+                    <div class="tracking-card">
+                        <div class="order-id">Order #<span id="order-number"></span></div>
+                        <div class="countdown" id="countdown-timer">19:45</div>
+                        
+                        <div class="status-timeline">
+                            <div class="status-step completed">
+                                <div class="status-icon">✓</div>
+                                <div>
+                                    <strong>Order Placed</strong><br>
+                                    <small>Ready for pickup</small>
+                                </div>
+                            </div>
+                            <div class="status-step active" id="pickup-step">
+                                <div class="status-icon">📦</div>
+                                <div>
+                                    <strong>Driver En Route</strong><br>
+                                    <small>Picking up your laundry</small>
+                                </div>
+                            </div>
+                            <div class="status-step pending" id="wash-step">
+                                <div class="status-icon">🧺</div>
+                                <div>
+                                    <strong>In Laundry</strong><br>
+                                    <small>Being processed</small>
+                                </div>
+                            </div>
+                            <div class="status-step pending" id="delivery-step">
+                                <div class="status-icon">🚚</div>
+                                <div>
+                                    <strong>Out for Delivery</strong><br>
+                                    <small>On the way back</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="map-simulation">
+                            <div class="driver-dot"></div>
+                        </div>
+
+                        <button class="order-btn" onclick="newOrder()">Place New Order</button>
+                    </div>
+                </div>
+
+                <div id="order-history-section" class="hidden">
+                    <h3>Order History</h3>
+                    <div class="order-history" id="order-history">
+                        <!-- History items will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Driver Interface -->
+            <div id="driver-interface" class="hidden">
+                <h2 style="margin-bottom: 20px;">Driver Dashboard</h2>
+                <div id="driver-requests">
+                    <!-- Driver requests will be populated here -->
+                </div>
+            </div>
+
+            <!-- Admin Interface -->
+            <div id="admin-interface" class="hidden">
+                <h2 style="margin-bottom: 20px;">Admin Dashboard</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="active-orders">0</div>
+                        <div class="stat-label">Active Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="daily-revenue">$0</div>
+                        <div class="stat-label">Daily Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avg-time">18m</div>
+                        <div class="stat-label">Avg Completion</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="customer-rating">4.9</div>
+                        <div class="stat-label">Customer Rating</div>
+                    </div>
+                </div>
+
+                <div class="machine-status">
+                    <h3>Machine Status</h3>
+                    <div class="machine">
+                        <div style="display: flex; align-items: center;">
+                            <div class="machine-indicator available"></div>
+                            Washer #1
+                        </div>
+                        <span>Available</span>
+                    </div>
+                    <div class="machine">
+                        <div style="display: flex; align-items: center;">
+                            <div class="machine-indicator busy"></div>
+                            Washer #2
+                        </div>
+                        <span>12 min remaining</span>
+                    </div>
+                    <div class="machine">
+                        <div style="display: flex; align-items: center;">
+                            <div class="machine-indicator available"></div>
+                            Dryer #1
+                        </div>
+                        <span>Available</span>
+                    </div>
+                    <div class="machine">
+                        <div style="display: flex; align-items: center;">
+                            <div class="machine-indicator maintenance"></div>
+                            Dryer #2
+                        </div>
+                        <span>Maintenance</span>
+                    </div>
+                </div>
+
+                <div class="tracking-card">
+                    <h3>Current Orders</h3>
+                    <div id="admin-orders">
+                        <!-- Admin order list will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentRole = 'user';
+        let selectedService = null;
+        let orders = [];
+        let drivers = [];
+        let currentOrder = null;
+        let orderCounter = 1000;
+
+        // Initialize the app
+        function initializeApp() {
+            // Create mock drivers
+            drivers = [
+                { id: 1, name: 'Mike Johnson', status: 'available', currentOrder: null },
+                { id: 2, name: 'Sarah Chen', status: 'busy', currentOrder: null },
+                { id: 3, name: 'David Martinez', status: 'available', currentOrder: null }
+            ];
+
+            updatePricing();
+            switchRole('user');
+        }
+
+        function switchRole(role) {
+            currentRole = role;
+            
+            // Update active button
+            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Hide all interfaces
+            document.getElementById('user-interface').classList.add('hidden');
+            document.getElementById('driver-interface').classList.add('hidden');
+            document.getElementById('admin-interface').classList.add('hidden');
+
+            // Show selected interface
+            document.getElementById(role + '-interface').classList.remove('hidden');
+
+            if (role === 'driver') {
+                populateDriverRequests();
+            } else if (role === 'admin') {
+                populateAdminDashboard();
+            }
+        }
+
+        function selectService(service) {
+            selectedService = service;
+            
+            // Update visual selection
+            document.querySelectorAll('.service-card').forEach(card => card.classList.remove('selected'));
+            event.target.closest('.service-card').classList.add('selected');
+            
+            updatePricing();
+        }
+
+        function updateWeight() {
+            const weight = document.getElementById('weight-slider').value;
+            document.getElementById('weight-value').textContent = weight;
+            updatePricing();
+        }
+
+        function updatePricing() {
+            const weight = parseInt(document.getElementById('weight-slider').value) || 5;
+            const shirts = parseInt(document.getElementById('shirts').value) || 0;
+            const pants = parseInt(document.getElementById('pants').value) || 0;
+            
+            let serviceCost = 0;
+            
+            if (selectedService === 'wash-fold') {
+                serviceCost = weight * 2.5;
+            } else if (selectedService === 'dry-clean') {
+                serviceCost = (shirts + pants) * 8;
+            } else if (selectedService === 'ironing') {
+                serviceCost = (shirts + pants) * 3;
+            } else if (selectedService === 'express') {
+                serviceCost = weight * 2.5 + (shirts + pants) * 3;
+            } else {
+                serviceCost = weight * 2.5; // Default
+            }
+            
+            const expressFee = 5;
+            const total = serviceCost + expressFee;
+            
+            document.getElementById('service-cost').textContent = '$' + serviceCost.toFixed(2);
+            document.getElementById('total-cost').textContent = '$' + total.toFixed(2);
+        }
+
+        function placeOrder() {
+            const weight = parseInt(document.getElementById('weight-slider').value) || 5;
+            const shirts = parseInt(document.getElementById('shirts').value) || 0;
+            const pants = parseInt(document.getElementById('pants').value) || 0;
+            const total = parseFloat(document.getElementById('total-cost').textContent.replace('$', ''));
+            
+            const order = {
+                id: ++orderCounter,
+                service: selectedService || 'wash-fold',
+                weight: weight,
+                items: { shirts, pants },
+                total: total,
+                status: 'placed',
+                timestamp: new Date(),
+                driver: null,
+                estimatedCompletion: new Date(Date.now() + 20 * 60 * 1000) // 20 minutes
+            };
+            
+            orders.push(order);
+            currentOrder = order;
+            
+            // Assign to available driver
+            const availableDriver = drivers.find(d => d.status === 'available');
+            if (availableDriver) {
+                availableDriver.status = 'busy';
+                availableDriver.currentOrder = order.id;
+                order.driver = availableDriver.id;
+            }
+            
+            // Switch to tracking view
+            document.getElementById('order-form').classList.add('hidden');
+            document.getElementById('order-tracking').classList.remove('hidden');
+            document.getElementById('order-number').textContent = order.id;
+            
+            // Start order simulation
+            simulateOrder(order);
+            
+            showNotification('Order placed! Driver en route for pickup.');
+        }
+
+        function simulateOrder(order) {
+            const steps = ['pickup', 'wash', 'delivery', 'completed'];
+            let currentStep = 0;
+            
+            // Start countdown
+            startCountdown(20 * 60); // 20 minutes in seconds
+            
+            const progressInterval = setInterval(() => {
+                if (currentStep < steps.length) {
+                    updateOrderStatus(steps[currentStep]);
+                    currentStep++;
+                    
+                    if (currentStep === steps.length) {
+                        clearInterval(progressInterval);
+                        completeOrder(order);
+                    }
+                }
+            }, 5000); // Progress every 5 seconds for demo
+        }
+
+        function updateOrderStatus(step) {
+            const stepElements = {
+                'pickup': 'pickup-step',
+                'wash': 'wash-step',
+                'delivery': 'delivery-step'
+            };
+            
+            // Update previous step to completed
+            document.querySelectorAll('.status-step.active').forEach(el => {
+                el.classList.remove('active');
+                el.classList.add('completed');
+            });
+            
+            // Update current step to active
+            if (stepElements[step]) {
+                const element = document.getElementById(stepElements[step]);
+                element.classList.remove('pending');
+                element.classList.add('active');
+            }
+            
+            // Show notifications
+            const messages = {
+                'pickup': 'Driver has picked up your laundry!',
+                'wash': 'Your laundry is being processed!',
+                'delivery': 'Driver is on the way with your clean laundry!'
+            };
+            
+            if (messages[step]) {
+                showNotification(messages[step]);
+            }
+        }
+
+        function completeOrder(order) {
+            order.status = 'completed';
+            
+            // Update all steps to completed
+            document.querySelectorAll('.status-step').forEach(el => {
+                el.classList.remove('active', 'pending');
+                el.classList.add('completed');
+            });
+            
+            // Free up driver
+            const driver = drivers.find(d => d.id === order.driver);
+            if (driver) {
+                driver.status = 'available';
+                driver.currentOrder = null;
+            }
+            
+            showNotification('Order completed! Your laundry has been delivered. ⭐');
+            
+            // Stop countdown
+            document.getElementById('countdown-timer').textContent = 'Delivered! ✅';
+        }
+
+        function startCountdown(seconds) {
+            const countdownElement = document.getElementById('countdown-timer');
+            
+            const countdown = setInterval(() => {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                
+                countdownElement.textContent = 
+                    `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+                
+                seconds--;
+                
+                if (seconds < 0) {
+                    clearInterval(countdown);
+                }
+            }, 1000);
+        }
+
+        function newOrder() {
+            document.getElementById('order-tracking').classList.add('hidden');
+            document.getElementById('order-form').classList.remove('hidden');
+            
+            // Reset form
+            selectedService = null;
+            document.querySelectorAll('.service-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById('shirts').value = '';
+            document.getElementById('pants').value = '';
+            document.getElementById('weight-slider').value = 5;
+            updateWeight();
+            updatePricing();
+        }
+
+        function populateDriverRequests() {
+            const container = document.getElementById('driver-requests');
+            container.innerHTML = '';
+            
+            // Show pending orders for drivers
+            const pendingOrders = orders.filter(o => o.status !== 'completed');
+            
+            pendingOrders.forEach(order => {
+                const card = document.createElement('div');
+                card.className = 'request-card';
+                
+                const driver = drivers.find(d => d.id === order.driver);
+                const driverName = driver ? driver.name : 'Unassigned';
+                
+                card.innerHTML = `
+                    <div class="request-header">
+                        <strong>Order #${order.id}</strong>
+                        <span style="color: #4facfe;">$${order.total.toFixed(2)}</span>
+                    </div>
+                    <div class="customer-info">
+                        <p><strong>Service:</strong> ${order.service.replace('-', ' & ').toUpperCase()}</p>
+                        <p><strong>Weight:</strong> ${order.weight} lbs | <strong>Items:</strong> ${order.items.shirts} shirts, ${order.items.pants} pants</p>
+                        <p><strong>Driver:</strong> ${driverName}</p>
+                        <p><strong>Status:</strong> ${order.status.toUpperCase()}</p>
+                    </div>
+                    <button class="action-btn" onclick="updateOrderStatusDriver(${order.id})">
+                        ${getNextDriverAction(order.status)}
+                    </button>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            if (pendingOrders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No active orders</p>';
+            }
+        }
+
+        function getNextDriverAction(status) {
+            const actions = {
+                'placed': 'Mark as Picked Up',
+                'pickup': 'Mark as In Laundry',
+                'wash': 'Mark as Out for Delivery',
+                'delivery': 'Mark as Delivered'
+            };
+            return actions[status] || 'Update Status';
+        }
+
+        function updateOrderStatusDriver(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const statusFlow = {
+                'placed': 'pickup',
+                'pickup': 'wash',
+                'wash': 'delivery',
+                'delivery': 'completed'
+            };
+            
+            order.status = statusFlow[order.status];
+            
+            if (order.status === 'completed') {
+                const driver = drivers.find(d => d.id === order.driver);
+                if (driver) {
+                    driver.status = 'available';
+                    driver.currentOrder = null;
+                }
+            }
+            
+            populateDriverRequests();
+            showNotification(`Order #${orderId} status updated to ${order.status}!`);
+        }
+
+        function populateAdminDashboard() {
+            // Update stats
+            const activeOrders = orders.filter(o => o.status !== 'completed').length;
+            const dailyRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+            
+            document.getElementById('active-orders').textContent = activeOrders;
+            document.getElementById('daily-revenue').textContent = ' + dailyRevenue.toFixed(2);
+            
+            // Populate current orders
+            const container = document.getElementById('admin-orders');
+            container.innerHTML = '';
+            
+            const currentOrders = orders.filter(o => o.status !== 'completed');
+            
+            currentOrders.forEach(order => {
+                const driver = drivers.find(d => d.id === order.driver);
+                const driverName = driver ? driver.name : 'Unassigned';
+                
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'history-item';
+                orderDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>Order #${order.id}</strong><br>
+                            <small>${order.service} | ${driverName} | ${order.total.toFixed(2)}</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="color: #4facfe; font-weight: bold;">${order.status.toUpperCase()}</div>
+                            <button class="reorder-btn" onclick="reassignDriver(${order.id})">Reassign</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(orderDiv);
+            });
+            
+            if (currentOrders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No active orders</p>';
+            }
+        }
+
+        function reassignDriver(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            const availableDriver = drivers.find(d => d.status === 'available');
+            
+            if (order && availableDriver) {
+                // Free up current driver if any
+                if (order.driver) {
+                    const currentDriver = drivers.find(d => d.id === order.driver);
+                    if (currentDriver) {
+                        currentDriver.status = 'available';
+                        currentDriver.currentOrder = null;
+                    }
+                }
+                
+                // Assign new driver
+                availableDriver.status = 'busy';
+                availableDriver.currentOrder = order.id;
+                order.driver = availableDriver.id;
+                
+                populateAdminDashboard();
+                showNotification(`Order #${orderId} reassigned to ${availableDriver.name}`);
+            } else {
+                showNotification('No available drivers for reassignment', 'warning');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.background = type === 'warning' ? '#ffc107' : '#28a745';
+            notification.style.color = type === 'warning' ? '#333' : 'white';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Add order history functionality
+        function showOrderHistory() {
+            const completedOrders = orders.filter(o => o.status === 'completed');
+            const historyContainer = document.getElementById('order-history');
+            const historySection = document.getElementById('order-history-section');
+            
+            historyContainer.innerHTML = '';
+            
+            completedOrders.forEach(order => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>Order #${order.id}</strong><br>
+                            <small>${order.service} | ${order.weight}lbs | ${order.total.toFixed(2)}</small><br>
+                            <small style="color: #666;">${order.timestamp.toLocaleDateString()}</small>
+                        </div>
+                        <button class="reorder-btn" onclick="reorder(${order.id})">Reorder</button>
+                    </div>
+                `;
+                historyContainer.appendChild(historyItem);
+            });
+            
+            if (completedOrders.length > 0) {
+                historySection.classList.remove('hidden');
+            }
+        }
+
+        function reorder(orderId) {
+            const originalOrder = orders.find(o => o.id === orderId);
+            if (!originalOrder) return;
+            
+            // Pre-fill form with previous order details
+            selectedService = originalOrder.service;
+            document.getElementById('weight-slider').value = originalOrder.weight;
+            document.getElementById('shirts').value = originalOrder.items.shirts;
+            document.getElementById('pants').value = originalOrder.items.pants;
+            
+            // Update UI
+            document.querySelectorAll('.service-card').forEach(card => {
+                card.classList.remove('selected');
+                if (card.onclick.toString().includes(originalOrder.service)) {
+                    card.classList.add('selected');
+                }
+            });
+            
+            updateWeight();
+            updatePricing();
+            
+            showNotification('Previous order loaded! Review and place order.');
+        }
+
+        // Add rating system
+        function rateOrder(orderId, rating) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.rating = rating;
+                showNotification(`Thank you for rating your order ${rating}/5 stars!`);
+            }
+        }
+
+        // Simulate machine cycles for admin
+        function simulateMachines() {
+            setInterval(() => {
+                // Randomly update machine statuses for demo
+                const machines = document.querySelectorAll('.machine-indicator');
+                machines.forEach(machine => {
+                    if (Math.random() < 0.1) { // 10% chance to change status
+                        const statuses = ['available', 'busy', 'maintenance'];
+                        const currentStatus = Array.from(machine.classList).find(c => statuses.includes(c));
+                        machine.classList.remove(currentStatus);
+                        
+                        let newStatus;
+                        do {
+                            newStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                        } while (newStatus === currentStatus);
+                        
+                        machine.classList.add(newStatus);
+                        
+                        // Update text
+                        const machineElement = machine.closest('.machine');
+                        const statusText = machineElement.querySelector('span:last-child');
+                        if (newStatus === 'available') {
+                            statusText.textContent = 'Available';
+                        } else if (newStatus === 'busy') {
+                            statusText.textContent = Math.floor(Math.random() * 20 + 5) + ' min remaining';
+                        } else {
+                            statusText.textContent = 'Maintenance';
+                        }
+                    }
+                });
+            }, 10000); // Check every 10 seconds
+        }
+
+        // Enhanced pricing with dynamic fees
+        function calculateDynamicPricing() {
+            const basePrice = parseFloat(document.getElementById('service-cost').textContent.replace(', ''));
+            const currentHour = new Date().getHours();
+            const activeOrderCount = orders.filter(o => o.status !== 'completed').length;
+            
+            let multiplier = 1;
+            
+            // Peak hours (7-9 AM, 6-8 PM)
+            if ((currentHour >= 7 && currentHour <= 9) || (currentHour >= 18 && currentHour <= 20)) {
+                multiplier += 0.25;
+            }
+            
+            // High demand
+            if (activeOrderCount > 5) {
+                multiplier += 0.15;
+            }
+            
+            // Weekend premium
+            const isWeekend = new Date().getDay() === 0 || new Date().getDay() === 6;
+            if (isWeekend) {
+                multiplier += 0.1;
+            }
+            
+            const adjustedPrice = basePrice * multiplier;
+            const expressFee = 5;
+            const total = adjustedPrice + expressFee;
+            
+            if (multiplier > 1) {
+                document.getElementById('express-fee').innerHTML = `${expressFee.toFixed(2)} <small style="color: #ff6b6b;">(+${((multiplier - 1) * 100).toFixed(0)}% demand)</small>`;
+            }
+            
+            document.getElementById('service-cost').textContent = ' + adjustedPrice.toFixed(2);
+            document.getElementById('total-cost').textContent = ' + total.toFixed(2);
+        }
+
+        // Add geolocation simulation
+        function simulateDriverLocation() {
+            if (currentOrder && currentOrder.status !== 'completed') {
+                const driverDot = document.querySelector('.driver-dot');
+                if (driverDot) {
+                    // Add pulsing effect during active delivery
+                    driverDot.style.animation = 'moveDriver 8s linear infinite, pulse 2s ease-in-out infinite';
+                }
+            }
+        }
+
+        // Add push notification simulation
+        function enableNotifications() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('Notifications enabled');
+                    }
+                });
+            }
+        }
+
+        function sendPushNotification(title, body) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: body,
+                    icon: '🧺'
+                });
+            }
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            simulateMachines();
+            enableNotifications();
+            
+            // Show order history if there are completed orders
+            setTimeout(() => {
+                if (orders.filter(o => o.status === 'completed').length > 0) {
+                    showOrderHistory();
+                }
+            }, 1000);
+            
+            // Simulate some initial completed orders for demo
+            setTimeout(() => {
+                const demoOrders = [
+                    {
+                        id: 998,
+                        service: 'wash-fold',
+                        weight: 3,
+                        items: { shirts: 2, pants: 1 },
+                        total: 12.50,
+                        status: 'completed',
+                        timestamp: new Date(Date.now() - 86400000), // Yesterday
+                        rating: 5
+                    },
+                    {
+                        id: 999,
+                        service: 'dry-clean',
+                        weight: 2,
+                        items: { shirts: 1, pants: 2 },
+                        total: 29.00,
+                        status: 'completed',
+                        timestamp: new Date(Date.now() - 172800000), // 2 days ago
+                        rating: 4
+                    }
+                ];
+                
+                orders.unshift(...demoOrders);
+                showOrderHistory();
+            }, 2000);
+        });
+
+        // Add keyboard shortcuts for quick actions
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        switchRole('user');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        switchRole('driver');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        switchRole('admin');
+                        break;
+                }
+            }
+        });
+
+        // Add touch gestures for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 100;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                const roles = ['user', 'driver', 'admin'];
+                const currentIndex = roles.indexOf(currentRole);
+                
+                if (diff > 0 && currentIndex < roles.length - 1) {
+                    // Swipe left - next role
+                    switchRole(roles[currentIndex + 1]);
+                } else if (diff < 0 && currentIndex > 0) {
+                    // Swipe right - previous role
+                    switchRole(roles[currentIndex - 1]);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
